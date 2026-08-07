@@ -676,3 +676,46 @@ function loadGame(gameId, roomData) {
         });
     }
 }
+function handleItchLoginResponse() {
+    const hash = window.location.hash;
+    
+    if (hash.includes('access_token')) {
+        const params = new URLSearchParams(hash.substring(1));
+        const token = params.get('access_token');
+        
+        fetch('https://itch.io/api/1/' + token + '/me')
+            .then(res => res.json())
+            .then(data => {
+                if(data && data.user) {
+                    const itchUser = data.user;
+                    
+                    signInAnonymously(auth).then((result) => {
+                        currentUser.name = itchUser.username;
+                        currentUser.avatar = itchUser.cover_url || "./Assets/icon/icon.png";
+                        currentUser.uid = result.user.uid;
+                        
+                        document.getElementById('welcomeName').innerText = currentUser.name;
+                        document.getElementById('mainMenuAvatar').src = currentUser.avatar;
+                        
+                        const userRef = ref(db, `users/${result.user.uid}`);
+                        update(userRef, {
+                            name: currentUser.name,
+                            avatar: currentUser.avatar,
+                            email: "Itch.io User"
+                        });
+                        
+                        document.getElementById('loggedInText').innerText = `أنت مسجل الدخول كـ (Itch.io: ${itchUser.username})`;
+                        document.getElementById('authStatusBox').classList.remove('hidden');
+                        document.getElementById('loginSection').classList.add('hidden');
+                        
+                        playTransition(() => switchScreen('mainMenuScreen'));
+                        window.history.replaceState(null, null, window.location.pathname);
+                        
+                    }).catch(e => alert(e.message));
+                }
+            })
+            .catch(e => console.error("Error fetching Itch.io profile:", e));
+    }
+}
+
+handleItchLoginResponse();
