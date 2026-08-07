@@ -60,7 +60,7 @@ export function initCardGame(container, roomData, currentUser, roomCode, dbInsta
                                 </label>
                             </div>
 
-                            <button id="btnLaunchGame" class="cg-btn-start-game">🚀 ابدأ التحدي الآن!</button>
+                            <button id="btnLaunchGame" class="cg-btn-start-game">Start</button>
                         ` : `
                             <p style="color: #94a3b8; margin-top: 15px;">يقوم الهوست الآن باختيار قوانين اللعبة والتحديات...</p>
                         `}
@@ -293,7 +293,7 @@ export function initCardGame(container, roomData, currentUser, roomCode, dbInsta
             
             card.innerHTML = `
                 <div class="cg-player-header">
-                    <div class="cg-avatar">${(p.name || 'P')[0].toUpperCase()}</div>
+                    <div class="cg-avatar">${p.avatar ? `<img src="${p.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : (p.name || 'لاعب')[0].toUpperCase()}</div>
                     <div class="cg-player-info">
                         <div class="cg-player-name">${p.name || 'لاعب'} ${isMe ? ' (أنت)' : ''}</div>
                         <div class="cg-player-score">النقاط: ${p.score || 0}</div>
